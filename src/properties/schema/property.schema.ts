@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm';
 import {
   decimal,
   integer,
@@ -5,8 +6,9 @@ import {
   serial,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { AgentTable } from '../agent';
+import { AgentTable } from 'src/agents/schema/agent.schema';
 
+// todo created and updated date and change it in filter asc desc
 export const PropertyTable = pgTable('properties', {
   id: serial('id').primaryKey(),
   title: varchar('title').notNull(),
@@ -20,3 +22,10 @@ export const PropertyTable = pgTable('properties', {
   propertyType: varchar('property_type').notNull(),
   internalNotes: varchar('internal_notes').notNull(),
 });
+
+export const PropertyRelations = relations(PropertyTable, ({ one }) => ({
+  agent: one(AgentTable, {
+    fields: [PropertyTable.agentId],
+    references: [AgentTable.id],
+  }),
+}));
