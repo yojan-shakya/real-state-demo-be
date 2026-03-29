@@ -1,10 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { GetPropertyListDto } from './dto/get-property-list.dto';
+import { PropertyListRequestDto } from './dto/property-list.request.dto';
 import { DATABASE_CONNECTION } from 'src/db/database-connection';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { and, eq, gte, like, lte, SQL, count, desc, asc } from 'drizzle-orm';
 import * as schema from '../db/schema';
-import { getPaginationOffset, paginate } from 'src/lib/utils/pagination.util';
+import {
+  getPaginationMeta,
+  getPaginationOffset,
+} from 'src/common/utils/pagination.util';
+import { plainToInstance } from 'class-transformer';
+import { PaginatedPropertiesDto, PropertyDetailResponseDto } from './dto';
 
 @Injectable()
 export class PropertiesService {
@@ -12,7 +17,7 @@ export class PropertiesService {
     @Inject(DATABASE_CONNECTION) private db: NodePgDatabase<typeof schema>,
   ) {}
 
-  async getPropertyList(filters: GetPropertyListDto) {
+  async getPropertyList(filters: PropertyListRequestDto) {
     const conditions: SQL[] = [];
 
     if (filters.baths !== undefined) {
@@ -69,16 +74,31 @@ export class PropertiesService {
       .from(schema.PropertyTable)
       .where(and(...conditions));
 
-    return paginate(listings, totalListings[0].count, {
+    const paginationMeta = getPaginationMeta(listings, totalListings[0].count, {
       limit: filters.limit,
       page: filters.page,
     });
+
+    return plainToInstance(
+      PaginatedPropertiesDto,
+      {
+        paginationMeta,
+        data: listings,
+      },
+      {
+        excludeExtraneousValues: true,
+      },
+    );
   }
 
   async getPropertyById(id: string, isAdmin: boolean) {
-    return this.db.query.PropertyTable.findFirst({
+    const propertyDetail = await this.db.query.PropertyTable.findFirst({
       where: eq(schema.PropertyTable.id, parseInt(id)),
       with: isAdmin ? { agent: true, adminMetadata: true } : { agent: true },
+    });
+
+    return plainToInstance(PropertyDetailResponseDto, propertyDetail, {
+      excludeExtraneousValues: true,
     });
   }
 }

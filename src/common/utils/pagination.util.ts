@@ -1,27 +1,22 @@
-import { PaginationDto } from '../dto/pagination.dto';
-import {
-  PaginatedResponse,
-  PaginationMeta,
-} from '../interface/pagination.interface';
+import { PaginationMetaDto } from '../dto';
+import { PaginationDto } from '../dto/pagination.request.dto';
 
-export function paginate<T>(
+export function getPaginationMeta<T>(
   data: T[],
   total: number,
   query: Pick<PaginationDto, 'page' | 'limit'>,
-): PaginatedResponse<T> {
+): PaginationMetaDto {
   const { page = 1, limit = 20 } = query;
   const totalPages = Math.ceil(total / limit);
 
-  const paginationMeta: PaginationMeta = {
-    total,
+  return {
     page,
     limit,
     totalPages,
     hasNext: page < totalPages,
     hasPrev: page > 1,
+    total,
   };
-
-  return { data, paginationMeta };
 }
 
 export function getPaginationOffset(page?: number, limit?: number) {
