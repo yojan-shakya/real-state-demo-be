@@ -1,4 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PropertyListRequestDto } from './dto/property-list.request.dto';
 import { DATABASE_CONNECTION } from 'src/db/database-connection';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
@@ -74,10 +79,14 @@ export class PropertiesService {
       .from(schema.PropertyTable)
       .where(and(...conditions));
 
-    const paginationMeta = getPaginationMeta(listings, totalListings[0].count, {
-      limit: filters.limit,
-      page: filters.page,
-    });
+    const paginationMeta = getPaginationMeta(
+      listings,
+      totalListings[0]?.count || 0,
+      {
+        limit: filters.limit,
+        page: filters.page,
+      },
+    );
 
     return plainToInstance(
       PaginatedPropertiesDto,
@@ -92,10 +101,20 @@ export class PropertiesService {
   }
 
   async getPropertyById(id: string, isAdmin: boolean) {
+    const parsedId = parseInt(id);
+
+    if (isNaN(parsedId)) {
+      throw new BadRequestException('Invalid Id');
+    }
+
     const propertyDetail = await this.db.query.PropertyTable.findFirst({
-      where: eq(schema.PropertyTable.id, parseInt(id)),
+      where: eq(schema.PropertyTable.id, parsedId),
       with: isAdmin ? { agent: true, adminMetadata: true } : { agent: true },
     });
+
+    if (!propertyDetail) {
+      throw new NotFoundException();
+    }
 
     return plainToInstance(PropertyDetailResponseDto, propertyDetail, {
       excludeExtraneousValues: true,
