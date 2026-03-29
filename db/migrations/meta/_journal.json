@@ -8,6 +8,13 @@
       "when": 1774630720142,
       "tag": "0000_init_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774793376697,
+      "tag": "0001_add_column_landsize_to_properties",
+      "breakpoints": true
     }
   ]
 }

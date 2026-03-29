@@ -13,6 +13,9 @@ export class PropertyListItemResponseDto {
 
   @Expose()
   suburbs: string;
+
+  @Expose()
+  landSize: number;
 }
 
 export class PaginatedPropertiesDto {

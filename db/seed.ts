@@ -52,6 +52,7 @@ async function seed() {
             suburbs: faker.location.city(),
             agentId: faker.helpers.arrayElement(agents).id,
             internalNotes: faker.lorem.sentence(),
+            landSize: faker.number.int({ min: 100, max: 1_000_000 }),
           })),
         )
         .returning();
