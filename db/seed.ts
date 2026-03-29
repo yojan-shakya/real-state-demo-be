@@ -16,6 +16,12 @@ const PROPERTIES_META_COUNT = 1000;
 const db = drizzle(process.env.DATABASE_URL!);
 
 async function seed() {
+  const existing = await db.select().from(PropertyTable).limit(1);
+
+  if (existing.length > 0) {
+    console.log('Already seeded, skipping');
+    process.exit(0);
+  }
   faker.seed(1);
 
   try {
