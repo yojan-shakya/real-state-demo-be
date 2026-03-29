@@ -10,6 +10,7 @@ import {
 } from 'src/common/utils/pagination.util';
 import { plainToInstance } from 'class-transformer';
 import { PaginatedPropertiesDto, PropertyDetailResponseDto } from './dto';
+import { PAGINATION_CONSTANTS } from 'src/common/constants';
 
 @Injectable()
 export class PropertiesService {
@@ -59,9 +60,8 @@ export class PropertiesService {
     const offset = getPaginationOffset(filters.page, filters.limit);
 
     const listings = await this.db.query.PropertyTable.findMany({
-      // todo put pagination datas in constants
       where: and(...conditions),
-      limit: filters.limit || 1,
+      limit: filters.limit || PAGINATION_CONSTANTS.DEFAULT_LIMIT,
       offset,
       orderBy:
         filters.order === 'asc'
