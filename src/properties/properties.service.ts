@@ -11,7 +11,11 @@ import { and, eq, gte, like, lte, SQL, count, desc, asc } from 'drizzle-orm';
 import * as schema from '../db/schema';
 import { getPaginationMeta, getPaginationOffset } from 'src/common/utils';
 import { plainToInstance } from 'class-transformer';
-import { PaginatedPropertiesDto, PropertyDetailResponseDto } from './dto';
+import {
+  PaginatedPropertiesDto,
+  PropertyDetailResponseDto,
+  PropertyTypesResponseDto,
+} from './dto';
 import { PAGINATION_CONSTANTS } from 'src/common/constants';
 
 @Injectable()
@@ -115,6 +119,12 @@ export class PropertiesService {
 
     return plainToInstance(PropertyDetailResponseDto, propertyDetail, {
       excludeExtraneousValues: true,
+    });
+  }
+
+  async getPropertyTypes() {
+    return plainToInstance(PropertyTypesResponseDto, {
+      data: schema.propertyTypeEnum.enumValues,
     });
   }
 }

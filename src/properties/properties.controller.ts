@@ -4,16 +4,16 @@ import { PropertyListRequestDto } from './dto/property-list.request.dto';
 import { ADMIN_FLAG, IsAdmin } from 'src/common/decorators';
 import { ApiHeader } from '@nestjs/swagger';
 
-@Controller('listings')
+@Controller('property')
 export class PropertiesController {
   constructor(private readonly propertiesService: PropertiesService) {}
 
-  @Get()
+  @Get('listings')
   async getPropertyList(@Query() params: PropertyListRequestDto) {
     return this.propertiesService.getPropertyList(params);
   }
 
-  @Get(':id')
+  @Get('listings/:id')
   @ApiHeader({
     name: ADMIN_FLAG,
     required: false,
@@ -22,5 +22,10 @@ export class PropertiesController {
   })
   async getListingById(@Param('id') id: string, @IsAdmin() isAdmin: boolean) {
     return this.propertiesService.getPropertyById(id, isAdmin);
+  }
+
+  @Get('property-types')
+  async getPropertyTypes() {
+    return this.propertiesService.getPropertyTypes();
   }
 }
