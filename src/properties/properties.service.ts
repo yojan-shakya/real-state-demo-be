@@ -2,12 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { GetPropertyListDto } from './dto/get-property-list.dto';
 import { DATABASE_CONNECTION } from 'src/db/database-connection';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { and, eq, gte, like, lte, SQL, count } from 'drizzle-orm';
-import * as schema from './schema/property.schema';
-import {
-  getPaginationOffset,
-  paginate,
-} from 'src/shared/utils/pagination.util';
+import { and, eq, gte, like, lte, SQL, count, desc, asc } from 'drizzle-orm';
+import * as schema from '../db/schema';
+import { getPaginationOffset, paginate } from 'src/lib/utils/pagination.util';
 
 @Injectable()
 export class PropertiesService {
@@ -38,12 +35,6 @@ export class PropertiesService {
       );
     }
 
-    if (filters.propertyType !== undefined) {
-      conditions.push(
-        eq(schema.PropertyTable.propertyType, filters.propertyType),
-      );
-    }
-
     if (filters.search !== undefined) {
       conditions.push(like(schema.PropertyTable.title, `%${filters.search}%`));
     }
@@ -54,23 +45,24 @@ export class PropertiesService {
       );
     }
 
-    // todo property_type filters
+    if (filters.propertyType !== undefined) {
+      conditions.push(
+        eq(schema.PropertyTable.propertyType, filters.propertyType),
+      );
+    }
 
     const offset = getPaginationOffset(filters.page, filters.limit);
 
-    const listings = await this.db
-      .select()
-      .from(schema.PropertyTable)
-      .where(and(...conditions))
+    const listings = await this.db.query.PropertyTable.findMany({
       // todo put pagination datas in constants
-      .limit(filters.limit || 1)
-      .offset(offset);
-    // todo by date
-    // .orderBy(
-    //   filters.order === 'desc'
-    //     ? desc(schema.PropertyTable.title)
-    //     : asc(schema.PropertyTable.title),
-    // );
+      where: and(...conditions),
+      limit: filters.limit || 1,
+      offset,
+      orderBy:
+        filters.order === 'asc'
+          ? asc(schema.PropertyTable.updatedAt)
+          : desc(schema.PropertyTable.updatedAt),
+    });
 
     const totalListings = await this.db
       .select({ count: count() })
@@ -83,9 +75,10 @@ export class PropertiesService {
     });
   }
 
-  async getListingById(id: string) {
+  async getListingById(id: string, isAdmin: boolean) {
     return this.db.query.PropertyTable.findFirst({
       where: eq(schema.PropertyTable.id, parseInt(id)),
+      with: isAdmin ? { agent: true, adminMetadata: true } : { agent: true },
     });
   }
 }

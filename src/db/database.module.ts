@@ -3,8 +3,7 @@ import { DATABASE_CONNECTION } from './database-connection';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import * as agentSchema from '../agents/schema/agent.schema';
-import * as propertySchema from '../properties/schema/property.schema';
+import * as schema from './schema';
 
 @Module({
   imports: [ConfigModule], // ← add this
@@ -18,10 +17,7 @@ import * as propertySchema from '../properties/schema/property.schema';
           connectionString: configService.getOrThrow('DATABASE_URL'),
         });
         return drizzle(pool, {
-          schema: {
-            ...agentSchema,
-            ...propertySchema,
-          },
+          schema,
         });
       },
     },

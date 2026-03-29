@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
-import { PaginationDto } from 'src/shared/dto/pagination.dto';
+import { IsIn, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { propertyTypeEnum, type PropertyType } from 'src/db/schema';
+import { PaginationDto } from 'src/lib/dto/pagination.dto';
 
 export class GetPropertyListDto extends PaginationDto {
   @IsOptional()
@@ -32,12 +33,10 @@ export class GetPropertyListDto extends PaginationDto {
   baths?: number;
 
   @IsOptional()
-  @IsString()
-  // todo
-  propertyType: string;
+  @IsIn(propertyTypeEnum.enumValues)
+  propertyType: PropertyType;
 
   @IsOptional()
   @IsString()
-  // todo
   suburb: string;
 }
