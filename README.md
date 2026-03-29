@@ -12,7 +12,11 @@ This project is a part of techKrafts assignment.
 1. Run the app.
 2. Go to `localhost:3000/api` for swagger
 
-# Note
+# Test
+
+1. `npm run test`
+
+# Notes
 
 1. Delay interceptor is used to simulate network delays
 2. put x-admin=true in header to simulate admin priveleges (in listings/id)

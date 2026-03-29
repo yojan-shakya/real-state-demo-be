@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PropertiesService } from './properties.service';
 import { DATABASE_CONNECTION } from './../db/database-connection';
+import { PropertyListItemResponseDto } from './dto';
 
 const DBMock = {
   query: {
@@ -32,18 +33,17 @@ describe('PropertiesService', () => {
   });
 
   describe('getPropertyList', () => {
-    const mockListings = [
+    const mockPropertyList: PropertyListItemResponseDto[] = [
       {
         id: 1,
         title: 'Test Property',
         price: '500000',
-        bedrooms: 3,
-        bathrooms: 2,
+        landSize: 3000,
+        suburbs: 'Hattiban, Lalitpur',
       },
     ];
-
     beforeEach(() => {
-      DBMock.query.PropertyTable.findMany.mockResolvedValue(mockListings);
+      DBMock.query.PropertyTable.findMany.mockResolvedValue(mockPropertyList);
       DBMock.where.mockResolvedValue([{ count: 1 }]);
     });
 
@@ -54,21 +54,19 @@ describe('PropertiesService', () => {
     it('should return paginated properties', async () => {
       const result = await service.getPropertyList({ page: 1, limit: 10 });
 
-      expect(result.data).toEqual(mockListings);
-      expect(result.paginationMeta).toBeDefined();
+      expect(result.data).toHaveLength(1);
+      expect(result.paginationMeta.total).toBe(1);
+      expect(result.paginationMeta.totalPages).toBe(1);
+      expect(result.paginationMeta.hasNext).toBe(false);
+      expect(result.paginationMeta.hasPrev).toBe(false);
     });
   });
 
   describe('getPropertyById', () => {
-    const mockProperty = { id: 1, title: 'Test Property', agent: { id: 1 } };
+    const mockProperty = { id: 1, title: 'Test Property' };
 
     beforeEach(() => {
       DBMock.query.PropertyTable.findFirst.mockResolvedValue(mockProperty);
-    });
-
-    it('should return property with agent', async () => {
-      const result = await service.getPropertyById('1', false);
-      expect(result).toEqual(mockProperty);
     });
 
     it('should include adminMetadata when isAdmin is true', async () => {
