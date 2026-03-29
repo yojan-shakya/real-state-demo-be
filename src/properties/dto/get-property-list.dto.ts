@@ -34,9 +34,9 @@ export class GetPropertyListDto extends PaginationDto {
 
   @IsOptional()
   @IsIn(propertyTypeEnum.enumValues)
-  propertyType: PropertyType;
+  propertyType?: PropertyType;
 
   @IsOptional()
   @IsString()
-  suburb: string;
+  suburb?: string;
 }

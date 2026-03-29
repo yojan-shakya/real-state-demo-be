@@ -8,16 +8,16 @@ export class PropertiesController {
   constructor(private readonly propertiesService: PropertiesService) {}
 
   @Get()
-  async filterListings(@Query() params: GetPropertyListDto) {
+  async getPropertyList(@Query() params: GetPropertyListDto) {
     // todo remove this
     await new Promise((r) => setTimeout(r, 2000));
-    return this.propertiesService.filterListings(params);
+    return this.propertiesService.getPropertyList(params);
   }
 
   @Get(':id')
   async getListingById(@Param('id') id: string, @IsAdmin() isAdmin: boolean) {
     // todo remove this
     await new Promise((r) => setTimeout(r, 2000));
-    return this.propertiesService.getListingById(id, isAdmin);
+    return this.propertiesService.getPropertyById(id, isAdmin);
   }
 }

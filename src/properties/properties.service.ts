@@ -12,7 +12,7 @@ export class PropertiesService {
     @Inject(DATABASE_CONNECTION) private db: NodePgDatabase<typeof schema>,
   ) {}
 
-  async filterListings(filters: GetPropertyListDto) {
+  async getPropertyList(filters: GetPropertyListDto) {
     const conditions: SQL[] = [];
 
     if (filters.baths !== undefined) {
@@ -75,7 +75,7 @@ export class PropertiesService {
     });
   }
 
-  async getListingById(id: string, isAdmin: boolean) {
+  async getPropertyById(id: string, isAdmin: boolean) {
     return this.db.query.PropertyTable.findFirst({
       where: eq(schema.PropertyTable.id, parseInt(id)),
       with: isAdmin ? { agent: true, adminMetadata: true } : { agent: true },
