@@ -1,10 +1,11 @@
 # About the project
 
-This project is part of
+This project is a part of techKrafts assignment.
 
 # How to run the app
 
-`docker compose up`
+1. Create .env.docker (can copy from .env.docker.example)
+2. `docker compose up`
 
 # API example
 

@@ -13,7 +13,7 @@ const AGENT_COUNT = 200;
 const PROPERTIES_COUNT = 1000;
 const PROPERTIES_META_COUNT = 1000;
 
-const db = drizzle(process.env.DATABASE_URL!);
+const db = drizzle(process.env.NEST_DATABASE_URL!);
 
 async function seed() {
   const existing = await db.select().from(PropertyTable).limit(1);
