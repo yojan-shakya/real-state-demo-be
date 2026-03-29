@@ -10,8 +10,6 @@ export class PropertiesController {
 
   @Get()
   async getPropertyList(@Query() params: PropertyListRequestDto) {
-    // todo remove this and use interceptor
-    await new Promise((r) => setTimeout(r, 2000));
     return this.propertiesService.getPropertyList(params);
   }
 
@@ -23,8 +21,6 @@ export class PropertiesController {
     schema: { enum: ['true'] },
   })
   async getListingById(@Param('id') id: string, @IsAdmin() isAdmin: boolean) {
-    // todo remove this
-    await new Promise((r) => setTimeout(r, 2000));
     return this.propertiesService.getPropertyById(id, isAdmin);
   }
 }
