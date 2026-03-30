@@ -11,6 +11,8 @@ export const internalStatusesEnum = pgEnum('internal_property_status_enum', [
   'under_review',
 ]);
 
+export const internalStatusEnumValues = internalStatusesEnum.enumValues;
+
 export const PropertyAdminMetaTable = pgTable('property_admin_meta', {
   id: serial('id').primaryKey(),
   propertyId: integer('property_id').references(() => PropertyTable.id),

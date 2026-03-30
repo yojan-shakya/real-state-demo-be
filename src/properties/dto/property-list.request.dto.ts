@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsIn, IsNumber, IsOptional, IsString, Min } from 'class-validator';
-import { propertyTypeEnum, type PropertyType } from 'src/db/schema';
 import { PaginationDto } from 'src/common/dto/pagination.request.dto';
+import { type PropertyType, propertyTypeEnumValues } from 'src/db/schema';
 
 export class PropertyListRequestDto extends PaginationDto {
   @ApiProperty()
@@ -35,7 +35,7 @@ export class PropertyListRequestDto extends PaginationDto {
   baths?: number;
 
   @IsOptional()
-  @IsIn(propertyTypeEnum.enumValues)
+  @IsIn(propertyTypeEnumValues)
   propertyType?: PropertyType;
 
   @IsOptional()

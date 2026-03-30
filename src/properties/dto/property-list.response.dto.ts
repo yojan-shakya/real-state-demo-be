@@ -16,6 +16,9 @@ export class PropertyListItemResponseDto {
 
   @Expose()
   landSize: number;
+
+  @Expose()
+  propertyType: string;
 }
 
 export class PaginatedPropertiesDto {

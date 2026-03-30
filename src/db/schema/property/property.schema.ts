@@ -19,6 +19,8 @@ export const propertyTypeEnum = pgEnum('property_type_enum', [
   'LAND',
 ]);
 
+export const propertyTypeEnumValues = propertyTypeEnum.enumValues;
+
 export type PropertyType = InferEnum<typeof propertyTypeEnum>;
 
 export const PropertyTable = pgTable(

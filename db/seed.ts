@@ -3,7 +3,7 @@ import {
   internalStatusesEnum,
   PropertyAdminMetaTable,
   PropertyTable,
-  propertyTypeEnum,
+  propertyTypeEnumValues,
 } from 'src/db/schema';
 import { faker } from '@faker-js/faker';
 import { drizzle } from 'drizzle-orm/node-postgres';
@@ -46,9 +46,7 @@ async function seed() {
             price: faker.number.int({ min: 50000, max: 1000000 }).toString(),
             bedrooms: faker.number.int({ min: 1, max: 6 }),
             bathrooms: faker.number.int({ min: 1, max: 4 }),
-            propertyType: faker.helpers.arrayElement(
-              propertyTypeEnum.enumValues,
-            ),
+            propertyType: faker.helpers.arrayElement(propertyTypeEnumValues),
             suburbs: faker.location.city(),
             agentId: faker.helpers.arrayElement(agents).id,
             internalNotes: faker.lorem.sentence(),

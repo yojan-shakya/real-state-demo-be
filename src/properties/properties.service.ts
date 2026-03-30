@@ -7,7 +7,7 @@ import {
 import { PropertyListRequestDto } from './dto/property-list.request.dto';
 import { DATABASE_CONNECTION } from 'src/db/database-connection';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { and, eq, gte, like, lte, SQL, count, desc, asc } from 'drizzle-orm';
+import { and, eq, gte, lte, SQL, count, desc, asc, ilike } from 'drizzle-orm';
 import * as schema from '../db/schema';
 import { getPaginationMeta, getPaginationOffset } from 'src/common/utils';
 import { plainToInstance } from 'class-transformer';
@@ -48,12 +48,12 @@ export class PropertiesService {
     }
 
     if (filters.search !== undefined) {
-      conditions.push(like(schema.PropertyTable.title, `%${filters.search}%`));
+      conditions.push(ilike(schema.PropertyTable.title, `%${filters.search}%`));
     }
 
     if (filters.suburb !== undefined) {
       conditions.push(
-        like(schema.PropertyTable.suburbs, `%${filters.suburb}%`),
+        ilike(schema.PropertyTable.suburbs, `%${filters.suburb}%`),
       );
     }
 
@@ -71,8 +71,11 @@ export class PropertiesService {
       offset,
       orderBy:
         filters.order === 'asc'
-          ? asc(schema.PropertyTable.updatedAt)
-          : desc(schema.PropertyTable.updatedAt),
+          ? [asc(schema.PropertyTable.updatedAt), asc(schema.PropertyTable.id)]
+          : [
+              desc(schema.PropertyTable.updatedAt),
+              asc(schema.PropertyTable.id),
+            ],
     });
 
     const totalListings = await this.db
@@ -124,7 +127,7 @@ export class PropertiesService {
 
   async getPropertyTypes() {
     return plainToInstance(PropertyTypesResponseDto, {
-      data: schema.propertyTypeEnum.enumValues,
+      data: schema.propertyTypeEnumValues,
     });
   }
 }
