@@ -15,7 +15,8 @@ This project is a part of techKrafts assignment.
 
 # Test
 
-1. `npm run test`
+1. `npm install` 
+2. `npm run test`
 
 # Notes
 
